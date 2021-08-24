@@ -39,18 +39,18 @@ namespace SqlServerDataSeeder.Data
                 .HasForeignKey(x => x.ClientID);
 
             builder.Entity<Item>()
-                .HasMany<OrderItems>(x => x.OrderItems)
-                .WithOne(x => x.Item)
-                .HasForeignKey(x => x.ItemID);
-
-            builder.Entity<Item>()
                 .HasOne(x => x.Supplier)
                 .WithMany()
                 .HasForeignKey(x => x.SupplierID);
 
-            builder.Entity<Order>()
-                .HasMany(x => x.OrderItems)
-                .WithOne(x => x.Order)
+            builder.Entity<OrderItems>()
+                .HasOne(x => x.Item)
+                .WithMany()
+                .HasForeignKey(x => x.ItemID);
+            
+            builder.Entity<OrderItems>()
+                .HasOne(x => x.Order)
+                .WithMany()
                 .HasForeignKey(x => x.OrderID);
 
             builder.Entity<Order>()
@@ -62,6 +62,9 @@ namespace SqlServerDataSeeder.Data
                 .HasOne(x => x.PaymentMethod)
                 .WithMany()
                 .HasForeignKey(x => x.PaymentMethodID);
+
+            builder.Entity<OrderItems>()
+                .HasNoKey();
         }
     }
 }

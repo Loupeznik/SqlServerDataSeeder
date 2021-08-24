@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace SqlServerDataSeeder.Models
+﻿namespace SqlServerDataSeeder.Models
 {
     public class Item : Entity
     {
@@ -13,6 +11,5 @@ namespace SqlServerDataSeeder.Models
         public int SupplierID { get; set; }
         public Supplier Supplier { get; set; }
         public string ImagePath { get; set; }
-        public IList<OrderItems> OrderItems { get; set; }
     }
 }
