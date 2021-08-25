@@ -8,7 +8,6 @@ namespace SqlServerDataSeeder.Models
         public double Total { get; set; }
         public int ClientID { get; set; }
         public Client Client { get; set; }
-        public int PaymentID { get; set; }
         public Payment Payment { get; set; }
         public int Status { get; set; }
         public DateTime ShippedAt { get; set; }

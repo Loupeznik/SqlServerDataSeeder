@@ -26,45 +26,51 @@ namespace SqlServerDataSeeder.Data
             builder.Entity<Client>()
                 .HasOne(x => x.User)
                 .WithOne(x => x.Client)
-                .HasForeignKey<Client>(x => x.UserID);
+                .HasForeignKey<Client>(x => x.UserID)
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<Client>()
                 .HasMany<Order>(x => x.Orders)
                 .WithOne(x => x.Client)
-                .HasForeignKey(x => x.ClientID);
+                .HasForeignKey(x => x.ClientID)
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<Client>()
                 .HasMany<PaymentMethod>(x => x.PaymentMethods)
                 .WithOne(x => x.Client)
-                .HasForeignKey(x => x.ClientID);
+                .HasForeignKey(x => x.ClientID)
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<Item>()
                 .HasOne(x => x.Supplier)
                 .WithMany()
-                .HasForeignKey(x => x.SupplierID);
+                .HasForeignKey(x => x.SupplierID)
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<OrderItems>()
                 .HasOne(x => x.Item)
                 .WithMany()
-                .HasForeignKey(x => x.ItemID);
+                .HasForeignKey(x => x.ItemID)
+                .OnDelete(DeleteBehavior.Restrict);
             
             builder.Entity<OrderItems>()
                 .HasOne(x => x.Order)
                 .WithMany()
-                .HasForeignKey(x => x.OrderID);
+                .HasForeignKey(x => x.OrderID)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            builder.Entity<Order>()
-                .HasOne(x => x.Payment)
-                .WithMany()
-                .HasForeignKey(x => x.PaymentID);
+            builder.Entity<Payment>()
+                .HasOne(x => x.Order)
+                .WithOne(x => x.Payment)
+                .HasForeignKey<Payment>(x => x.OrderID)
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<Payment>()
                 .HasOne(x => x.PaymentMethod)
                 .WithMany()
-                .HasForeignKey(x => x.PaymentMethodID);
-
-            builder.Entity<OrderItems>()
-                .HasNoKey();
+                .HasForeignKey(x => x.PaymentMethodID)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
+

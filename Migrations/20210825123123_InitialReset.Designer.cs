@@ -10,8 +10,8 @@ using SqlServerDataSeeder.Data;
 namespace SqlServerDataSeeder.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20210824195457_Initial")]
-    partial class Initial
+    [Migration("20210825123123_InitialReset")]
+    partial class InitialReset
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -34,7 +34,7 @@ namespace SqlServerDataSeeder.Migrations
                     b.Property<string>("City")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("CreatedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeletedAt")
@@ -77,7 +77,7 @@ namespace SqlServerDataSeeder.Migrations
                     b.Property<int>("Category")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("CreatedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeletedAt")
@@ -121,7 +121,7 @@ namespace SqlServerDataSeeder.Migrations
                     b.Property<int>("ClientID")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("CreatedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeletedAt")
@@ -129,9 +129,6 @@ namespace SqlServerDataSeeder.Migrations
 
                     b.Property<DateTime>("PaidAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("PaymentID")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("ShippedAt")
                         .HasColumnType("datetime2");
@@ -152,18 +149,26 @@ namespace SqlServerDataSeeder.Migrations
 
                     b.HasIndex("ClientID");
 
-                    b.HasIndex("PaymentID");
-
                     b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("SqlServerDataSeeder.Models.OrderItems", b =>
                 {
+                    b.Property<int>("OrderItemsID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Count")
+                        .HasColumnType("int");
+
                     b.Property<int>("ItemID")
                         .HasColumnType("int");
 
                     b.Property<int>("OrderID")
                         .HasColumnType("int");
+
+                    b.HasKey("OrderItemsID");
 
                     b.HasIndex("ItemID");
 
@@ -179,11 +184,14 @@ namespace SqlServerDataSeeder.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime?>("CreatedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<int?>("OrderID")
+                        .HasColumnType("int");
 
                     b.Property<int>("PaymentMethodID")
                         .HasColumnType("int");
@@ -198,6 +206,10 @@ namespace SqlServerDataSeeder.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("PaymentID");
+
+                    b.HasIndex("OrderID")
+                        .IsUnique()
+                        .HasFilter("[OrderID] IS NOT NULL");
 
                     b.HasIndex("PaymentMethodID");
 
@@ -214,7 +226,7 @@ namespace SqlServerDataSeeder.Migrations
                     b.Property<int>("ClientID")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("CreatedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeletedAt")
@@ -249,7 +261,7 @@ namespace SqlServerDataSeeder.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("CreatedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeletedAt")
@@ -273,7 +285,7 @@ namespace SqlServerDataSeeder.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime?>("CreatedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeletedAt")
@@ -300,7 +312,8 @@ namespace SqlServerDataSeeder.Migrations
                 {
                     b.HasOne("SqlServerDataSeeder.Models.User", "User")
                         .WithOne("Client")
-                        .HasForeignKey("SqlServerDataSeeder.Models.Client", "UserID");
+                        .HasForeignKey("SqlServerDataSeeder.Models.Client", "UserID")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("User");
                 });
@@ -310,7 +323,7 @@ namespace SqlServerDataSeeder.Migrations
                     b.HasOne("SqlServerDataSeeder.Models.Supplier", "Supplier")
                         .WithMany()
                         .HasForeignKey("SupplierID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Supplier");
@@ -321,18 +334,10 @@ namespace SqlServerDataSeeder.Migrations
                     b.HasOne("SqlServerDataSeeder.Models.Client", "Client")
                         .WithMany("Orders")
                         .HasForeignKey("ClientID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SqlServerDataSeeder.Models.Payment", "Payment")
-                        .WithMany()
-                        .HasForeignKey("PaymentID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Client");
-
-                    b.Navigation("Payment");
                 });
 
             modelBuilder.Entity("SqlServerDataSeeder.Models.OrderItems", b =>
@@ -340,13 +345,13 @@ namespace SqlServerDataSeeder.Migrations
                     b.HasOne("SqlServerDataSeeder.Models.Item", "Item")
                         .WithMany()
                         .HasForeignKey("ItemID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("SqlServerDataSeeder.Models.Order", "Order")
                         .WithMany()
                         .HasForeignKey("OrderID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Item");
@@ -356,11 +361,18 @@ namespace SqlServerDataSeeder.Migrations
 
             modelBuilder.Entity("SqlServerDataSeeder.Models.Payment", b =>
                 {
+                    b.HasOne("SqlServerDataSeeder.Models.Order", "Order")
+                        .WithOne("Payment")
+                        .HasForeignKey("SqlServerDataSeeder.Models.Payment", "OrderID")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.HasOne("SqlServerDataSeeder.Models.PaymentMethod", "PaymentMethod")
                         .WithMany()
                         .HasForeignKey("PaymentMethodID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Order");
 
                     b.Navigation("PaymentMethod");
                 });
@@ -370,7 +382,7 @@ namespace SqlServerDataSeeder.Migrations
                     b.HasOne("SqlServerDataSeeder.Models.Client", "Client")
                         .WithMany("PaymentMethods")
                         .HasForeignKey("ClientID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Client");
@@ -381,6 +393,11 @@ namespace SqlServerDataSeeder.Migrations
                     b.Navigation("Orders");
 
                     b.Navigation("PaymentMethods");
+                });
+
+            modelBuilder.Entity("SqlServerDataSeeder.Models.Order", b =>
+                {
+                    b.Navigation("Payment");
                 });
 
             modelBuilder.Entity("SqlServerDataSeeder.Models.User", b =>

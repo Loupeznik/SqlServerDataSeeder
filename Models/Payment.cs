@@ -7,5 +7,7 @@
         public PaymentMethod PaymentMethod { get; set; }
         public int Status { get; set; }
         public int Type { get; set; }
+        public int? OrderID { get; set; }
+        public Order? Order { get; set; }
     }
 }
