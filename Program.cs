@@ -20,13 +20,28 @@ namespace SqlServerDataSeeder
             var items = GenerateItems();
             var orderItems = GenerateOrderItems();
 
+            Console.WriteLine("Seeding users");
             await dataContext.AddRangeAsync(users);
-            await dataContext.AddRangeAsync(orders);
-            await dataContext.AddRangeAsync(items);
-            await dataContext.AddRangeAsync(orderItems);
-
-            Console.WriteLine("Seeding records");
             
+            Console.WriteLine("Saving users");
+            await dataContext.SaveChangesAsync();
+            
+            Console.WriteLine("Seeding orders");
+            await dataContext.AddRangeAsync(orders);
+            
+            Console.WriteLine("Saving users");
+            await dataContext.SaveChangesAsync();
+            
+            Console.WriteLine("Seeding items");
+            await dataContext.AddRangeAsync(items);
+            
+            Console.WriteLine("Saving items");
+            await dataContext.SaveChangesAsync();
+            
+            Console.WriteLine("Seeding order items");
+            await dataContext.AddRangeAsync(orderItems);
+            
+            Console.WriteLine("Saving order items");
             await dataContext.SaveChangesAsync();
         }
 
@@ -102,11 +117,11 @@ namespace SqlServerDataSeeder
             
             var orders = new List<Order>();
 
-            for (var x = 0; x < 500000; x++)
+            for (var x = 0; x < 2000000; x++)
             {
                 if (x % 100000 == 0 && x != 0)
                 {
-                    Console.WriteLine($"Processed {x} out of {5000000}");
+                    Console.WriteLine($"Processed {x} out of {2000000}");
                 }
                 
                 var clientId = RandomNumber.Next(1, 1000000);
@@ -143,15 +158,15 @@ namespace SqlServerDataSeeder
             
             var orderItems = new List<OrderItems>();
 
-            for (var x = 0; x < 500000; x++)
+            for (var x = 0; x < 2000000; x++)
             {
                 if (x % 100000 == 0 && x != 0)
                 {
-                    Console.WriteLine($"Processed {x} out of {500000}");
+                    Console.WriteLine($"Processed {x} out of {2000000}");
                 }
                 
-                var orderId = RandomNumber.Next(1, 500000);
-                for (var y = 0; y < 2; y++)
+                var orderId = RandomNumber.Next(1, 2000000);
+                for (var y = 0; y < RandomNumber.Next(1, 2); y++)
                 {
                     orderItems.Add(new OrderItems
                     {
